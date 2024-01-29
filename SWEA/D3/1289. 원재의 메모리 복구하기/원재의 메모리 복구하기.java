@@ -1,35 +1,31 @@
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Solution {
+class Solution {
+	static int T, count; // local 변수 사용이 더 빠르긴 함. 가독성 때문에 사용.
+	static char[] input;
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(bf.readLine());
 
-		int T = Integer.parseInt(br.readLine());
+		for (int t = 1; t <= T; t++) {
+			// 테케 별 풀이.
+			input = bf.readLine().toCharArray();
+			int cnt = input.length;
 
-		for (int i = 0; i < T; i++) {
-			String in = br.readLine();
-			int[] inputs = new int[in.length()];
-			int[] origin = new int[in.length()];
-
-			int result = 0;
-
-			for (int j = 0; j < in.length(); j++) {
-				inputs[j] = (in.charAt(j)) - '0';
-			}
-
-			for (int j = 0; j < inputs.length; j++) {
-				if (inputs[j] == origin[j])	continue;
-				for (int k = j; k < inputs.length; k++) {					
-					origin[k] = (origin[k] == 0) ? 1:0;
+			// 최적화
+			count = 0;
+			char current = '0';
+			
+			for (int i = 0; i < cnt; i++) {
+				if(input[i] != current) {
+					count++;
 				}
-				result++;
+				current = input[i];
 			}
-
-			System.out.printf("#%d %d\n", (i + 1), result);
+			System.out.println("#" + t + " " + count);
 		}
 	}
-
 }
