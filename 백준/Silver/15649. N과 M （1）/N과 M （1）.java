@@ -1,5 +1,6 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
@@ -7,12 +8,15 @@ public class Main {
 	static int[] lst;
 	static int[] result;
 	static int N, M;
+	static StringBuilder sb;
 
 	public static void main(String[] args) throws Exception {
-		Scanner sc = new Scanner(System.in);
-
-		N = sc.nextInt();
-		M = sc.nextInt();
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		sb = new StringBuilder();
+		
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
 
 		checked = new boolean[N];
 
@@ -23,14 +27,16 @@ public class Main {
 		}
 
 		perm(0);
+		System.out.println(sb);
 	}
 
 	static void perm(int tgtIdx) {
 		if (tgtIdx == M) {
-			System.out.println(Arrays.toString(result).replace("[", "").replace("]", "").replace(",", ""));
+			for(int n : result)
+				sb.append(n).append(" ");
+			sb.append("\n");
 			return;
 		}
-
 		for (int i = 0; i < lst.length; i++) {
 			if(checked[i]) continue;
 			result[tgtIdx] = lst[i];
