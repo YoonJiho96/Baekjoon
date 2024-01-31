@@ -4,37 +4,27 @@ import java.util.StringTokenizer;
 
 public class Main {
 	static int N, M;
-	static StringTokenizer st;
-	static int[] inputs;
-	static int[] sums;
+	static int[] accu; // 현재 index 까지 누적된 합을 저장.
 	static StringBuilder sb = new StringBuilder();
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		st = new StringTokenizer(br.readLine());
-		// 값 입력
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		
-		// 입력 배열 초기화
-		inputs = new int[N+1];
+
+		accu = new int[N + 1]; // 0 dummy
 		st = new StringTokenizer(br.readLine());
-		for (int i=1; i<=N; i++) {
-			inputs[i] = Integer.parseInt(st.nextToken());
-		}
-		
-		// 구간 합 저장
-		sums = new int[N+1];
-		sums[1] = inputs[1];
-		for(int i=2; i<=N; i++) {
-			sums[i] = sums[i-1] + inputs[i];
+		for (int i = 1; i <= N; i++) {
+			accu[i] = accu[i - 1] + Integer.parseInt(st.nextToken());
 		}
 
-		// 케이스 별 값
-		for(int i=0; i<M; i++) {
+		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			sb.append(sums[b] - sums[a-1]).append("\n");
+			int from = Integer.parseInt(st.nextToken());
+			int to = Integer.parseInt(st.nextToken());
+			sb.append(accu[to] - accu[from - 1]).append("\n");
 		}
 		System.out.println(sb);
 	}
