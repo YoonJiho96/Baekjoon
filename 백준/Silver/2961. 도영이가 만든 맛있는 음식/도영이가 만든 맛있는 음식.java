@@ -1,65 +1,57 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N;
-	static Node[] input;
+	static int N, min;
+	static int[][] src;
 	static boolean[] select;
-	static List<Integer> result = new ArrayList<>();
-	
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-	
+		N = Integer.parseInt(br.readLine());
+
+		src = new int[N][2];
 		select = new boolean[N];
-		input = new Node[N];
+
+		// 초기값
+		min = Integer.MAX_VALUE; // 가장 큰 값
+
+		// 배열 초기화
 		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			int s = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			input[i] = new Node(s, b);
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			src[i][0] = Integer.parseInt(st.nextToken());
+			src[i][1] = Integer.parseInt(st.nextToken());
 		}
-		
+
 		subset(0);
-		System.out.println(Collections.min(result));
+		System.out.println(min);
 	}
-	
+
 	static void subset(int srcIdx) {
-		if (srcIdx == input.length) {
-			int count = 0;
-			int sSum = 1;
-			int bSum = 0;
-			
-			for (int i=0; i<input.length; i++ ) {
-				if(select[i]) {
-					count++;
-					sSum *= input[i].s;
-					bSum += input[i].b;
+		if (srcIdx == N) {
+			// 현재 select 에 선택된 재료가 true 설정
+			// 선택된 재료의 신맛합, 쓴맛합을 구한 다음 그 차이의 최소값 갱신
+			// 단 재료가 1개 이상
+			int sin = 1; // 곱
+			int ssn = 0; // 합
+			int cnt = 0;
+			for (int i = 0; i < N; i++) {
+				if (select[i]) {
+					cnt++;
+					sin *= src[i][0];
+					ssn += src[i][1];
 				}
 			}
-			if (count == 0) return;
-			result.add(Math.abs(sSum- bSum));
+			if (cnt > 0) {
+				min = Math.min(min, Math.abs(sin - ssn));
+			}
 			return;
 		}
-		
+
 		select[srcIdx] = true;
 		subset(srcIdx + 1);
 		select[srcIdx] = false;
 		subset(srcIdx + 1);
-	}
-}
-
-class Node {
-	int s;
-	int b;
-
-	Node(int s, int b) {
-		this.s = s;
-		this.b = b;
 	}
 }
