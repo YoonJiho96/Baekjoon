@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+// binary count
 public class Main {
 	static int N, min;
 	static int[][] src;
@@ -22,32 +23,23 @@ public class Main {
 			src[i][1] = Integer.parseInt(st.nextToken());
 		}
 
-		subset(0, 0);
-		System.out.println(min);
-	}
-
-	static void subset(int srcIdx, int mask) {
-		if (srcIdx == N) {
-			// 현재 select 에 선택된 재료가 true 설정
-			// 선택된 재료의 신맛합, 쓴맛합을 구한 다음 그 차이의 최소값 갱신
-			// 단 재료가 1개 이상
+		// Binary Count 풀이
+		int subsetCnt = 1 << src.length;	// 조합 수
+		
+		// 0 제외 : 재료 없는 경우
+		for (int i = 1; i < subsetCnt; i++) {	// 재료 최소 한개 이상.
+			// 이미 i 가 완성된 부분집합.
 			int sin = 1; // 곱
 			int ssn = 0; // 합
-			int cnt = 0;
-			for (int i = 0; i < N; i++) {
-				if ((mask & 1 << i) != 0) {
-					cnt++;
-					sin *= src[i][0];
-					ssn += src[i][1];
+			for (int j = 0; j < N; j++) {
+				if ((i & 1 << j) != 0) {	// mask -> i 대체 가능.
+					sin *= src[j][0];
+					ssn += src[j][1];
 				}
 			}
-			if (cnt > 0) {
-				min = Math.min(min, Math.abs(sin - ssn));
-			}
-			return;
+			min = Math.min(min, Math.abs(sin - ssn));		// 0인 경우 없음
 		}
-
-		subset(srcIdx + 1, mask | 1 << srcIdx);
-		subset(srcIdx + 1, mask);
+		
+		System.out.println(min);
 	}
 }
