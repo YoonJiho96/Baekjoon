@@ -5,14 +5,12 @@ import java.util.StringTokenizer;
 public class Main {
 	static int N, min;
 	static int[][] src;
-	static boolean[] select;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 
 		src = new int[N][2];
-		select = new boolean[N];
 
 		// 초기값
 		min = Integer.MAX_VALUE; // 가장 큰 값
@@ -24,11 +22,11 @@ public class Main {
 			src[i][1] = Integer.parseInt(st.nextToken());
 		}
 
-		subset(0);
+		subset(0, 0);
 		System.out.println(min);
 	}
 
-	static void subset(int srcIdx) {
+	static void subset(int srcIdx, int mask) {
 		if (srcIdx == N) {
 			// 현재 select 에 선택된 재료가 true 설정
 			// 선택된 재료의 신맛합, 쓴맛합을 구한 다음 그 차이의 최소값 갱신
@@ -37,7 +35,7 @@ public class Main {
 			int ssn = 0; // 합
 			int cnt = 0;
 			for (int i = 0; i < N; i++) {
-				if (select[i]) {
+				if ((mask & 1 << i) != 0) {
 					cnt++;
 					sin *= src[i][0];
 					ssn += src[i][1];
@@ -49,9 +47,7 @@ public class Main {
 			return;
 		}
 
-		select[srcIdx] = true;
-		subset(srcIdx + 1);
-		select[srcIdx] = false;
-		subset(srcIdx + 1);
+		subset(srcIdx + 1, mask | 1 << srcIdx);
+		subset(srcIdx + 1, mask);
 	}
 }
