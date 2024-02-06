@@ -26,26 +26,20 @@ public class Solution {
 			for (int i = 0; i < N; i++) {
 				sList[i] = Integer.parseInt(st.nextToken());
 			}
+			Arrays.sort(sList);
 
 			result = 0;
-			comb(0, 0);
+			for(int i=(N-1); i>0; i--) {
+				for(int j=(i-1); j>=0; j--) {
+					int sum = sList[i] + sList[j];
+					if(sum <= M) {
+						result = Math.max(result, sum);
+						break;
+					}
+				}
+			}
 			sb.append("#").append(t).append(" ").append((result == 0) ? -1 : result).append("\n");
 		}
 		System.out.println(sb);
-
-	}
-
-	static void comb(int srcIdx, int tgtIdx) {
-		if (tgtIdx == COUNT) {
-			int sum = Arrays.stream(resultList).sum();
-			if (sum <= M) {
-				result = Math.max(sum, result);
-			}
-			return;
-		}
-		for (int i = srcIdx; i < N; i++) {
-			resultList[tgtIdx] = sList[i];
-			comb(i + 1, tgtIdx + 1);
-		}
 	}
 }
