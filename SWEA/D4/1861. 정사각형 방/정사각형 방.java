@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 // visit 배열이 필요한가? => 필요 없음
@@ -11,6 +13,7 @@ public class Solution {
 	static int[] dy = { -1, 1, 0, 0 };
 	static int[] dx = { 0, 0, -1, 1 };
 	static StringBuilder sb = new StringBuilder();
+	static Queue<Node> queue = new ArrayDeque<>();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,7 +37,9 @@ public class Solution {
 			// 모든 좌표에서 다 시도. 그 각각의 결과 중 최선을 선택
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
-					dfs(i, j, map[i][j], 1);
+					// queue 초기화. queue.clear(); 는 현재 필요 X
+					queue.add(new Node(i, j, map[i][j], 1));
+					bfs();
 				}
 			}
 
@@ -43,27 +48,37 @@ public class Solution {
 		System.out.println(sb);
 	}
 
-	// y, x 좌표, no : 시작번호, cnt : 방문 횟수
-	static void dfs(int y, int x, int no, int cnt) {
-		// 기저 조건 X
-
-		// 문제 처리
-		if (cnt > COUNT) {
-			COUNT = cnt;
-			NO = no;
-		} else if (cnt == COUNT) {
-			NO = (no < NO) ? no:NO;
-		}
-		
-		// 이후 조건에 맞는 더 갈 수 있는 곳 방문
-		for(int i=0; i<4; i++) {
-			int ny = y + dy[i];
-			int nx = x + dx[i];
-			if(ny < 0 || nx < 0 || ny >= N || nx >= N || map[ny][nx] != map[y][x] + 1) {
-				continue;
+	static void bfs() {
+		while (!queue.isEmpty()) {
+			Node node = queue.poll();
+			
+			// 문제 처리
+			if (node.cnt > COUNT) {
+				COUNT = node.cnt;
+				NO = node.no;
+			} else if (node.cnt == COUNT) {
+				NO = (node.no < NO) ? node.no : NO;
 			}
-			dfs(ny, nx, no, cnt+1);
-			break;
+
+			// 이후 조건에 맞는 더 갈 수 있는 곳 방문
+			for (int i = 0; i < 4; i++) {
+				int ny = node.y + dy[i];
+				int nx = node.x + dx[i];
+				if (ny < 0 || nx < 0 || ny >= N || nx >= N || map[ny][nx] != map[node.y][node.x] + 1) {
+					continue;
+				}
+				queue.offer(new Node(ny, nx, node.no, node.cnt + 1));
+			}
+		}
+	}
+	static class Node {
+		int y, x, no, cnt;
+
+		Node(int y, int x, int no, int cnt) {
+			this.y = y;
+			this.x = x;
+			this.no = no;
+			this.cnt = cnt;
 		}
 	}
 }
