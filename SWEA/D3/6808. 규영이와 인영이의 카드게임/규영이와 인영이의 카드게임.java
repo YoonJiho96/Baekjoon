@@ -3,7 +3,10 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Solution{
+// 규영이 카드 FIX
+// 인영이 카드를 다양한 순열로 완탐.
+// bitmask
+public class Solution {
 	static int T, win, lose, N = 9;
 	static int[] input = new int[19]; // 0 : dummy, 규영이의 카드 입력을 여기에 표시 => 인영이의 카드를 구성
 	static int[] guCard = new int[9]; // 0 : dummy <= 고정
@@ -35,12 +38,8 @@ public class Solution{
 				if (input[i] == 0)
 					inCard[num++] = i;
 			}
-
-			// 가장 작은 수로 정렬 <= 경우의 하나 ( 이미 정렬 되어 있다.
-			while(true) {
-				check();
-				if(!np(inCard)) break;
-			}
+			
+			perm(0);
 			
 			sb.append("#").append(t).append(" ").append(win).append(" ").append(lose).append("\n");
 		}
@@ -65,6 +64,30 @@ public class Solution{
 			swap(array, i++, k--);
 		}
 		return true;
+	}
+	
+	// 인영이 카드에서 스스로 자리 바꿈을 통해서 가능한 순열을 만든다.
+	static void perm(int srcIdx) {
+		if (srcIdx == N) {
+			// 순열 하나 완성
+			check();
+			return;
+		}
+
+		// for 문을 이용한 순열 구현
+		for (int i = srcIdx; i < N; i++) {
+			// swap
+			int temp = inCard[srcIdx];
+			inCard[srcIdx] = inCard[i];
+			inCard[i] = temp;
+			
+			perm(srcIdx + 1);
+			
+			// swap 원복
+			temp = inCard[srcIdx];
+			inCard[srcIdx] = inCard[i];
+			inCard[i] = temp;
+		}
 	}
 	
 	static void swap(int[] array, int i, int j) {
