@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -110,9 +108,8 @@ public class Solution {
 				connect(y, x, i, 2);
 				dfs(idx + 1, count + num, connected + 1);
 				connect(y, x, i, 0);
-			} else {
-				dfs(idx + 1, count, connected);
 			}
 		}
+		dfs(idx + 1, count, connected);
 	}
 }
