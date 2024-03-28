@@ -29,13 +29,7 @@ public class Solution {
 			for (int i = 0; i < N; i++) {
 				for (int j = 0; j < N; j++) {
 					for (int k = 0; k < N; k++) {
-						// i 를 거쳐감
-						int jToi = adjMatrix[j][i];
-						int iTok = adjMatrix[i][k];
-						int jTok = adjMatrix[j][k];
-						if (jToi != 10000 && iTok != 10000) {
-							adjMatrix[j][k] = Math.min(jTok, jToi + iTok);
-						}
+						adjMatrix[j][k] = Math.min(adjMatrix[j][k], adjMatrix[j][i] + adjMatrix[i][k]);
 					}
 				}
 			}
