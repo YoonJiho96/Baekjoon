@@ -1,17 +1,14 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int R, C, dPos[];
+	static int R, C;
 	static int[] dy = { -1, 1, 0, 0 };
 	static int[] dx = { 0, 0, -1, 1 };
 	static char[][] map;
-	static List<int[]> wList;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,19 +16,17 @@ public class Main {
 		R = Integer.parseInt(st.nextToken());
 		C = Integer.parseInt(st.nextToken());
 
-		wList = new ArrayList<>();
 		map = new char[R][C];
-		visit = new boolean[R][C];
 		for (int i = 0; i < R; i++) {
 			String cur = br.readLine();
 			for (int j = 0; j < C; j++) {
 				char c = cur.charAt(j);
 				map[i][j] = c;
 				if (c == '*') {
-					wList.add(new int[] { i, j });
+					queue.offer(new int[] {i, j});
 				}
 				if (c == 'S') {
-					dPos = new int[] { i, j };
+					dQueue.offer(new int[] { i, j });
 				}
 			}
 		}
@@ -39,23 +34,13 @@ public class Main {
 		bfs();
 	}
 
-	static boolean[][] visit;
+	static Queue<int[]> queue = new ArrayDeque<>();
+	static Queue<int[]> dQueue = new ArrayDeque<>();
 
 	static void bfs() {
-		Queue<int[]> queue = new ArrayDeque<>();
-		for (int[] n : wList) {
-			queue.offer(n);
-		}
-
-		Queue<int[]> dQueue = new ArrayDeque<>();
-		dQueue.offer(dPos);
-
 		int count = 0;
 		while (!queue.isEmpty() || !dQueue.isEmpty()) {
-			int size = queue.size();
-
 			count++;
-
 			// 고슴
 			int dSize = dQueue.size();
 			for (int i = 0; i < dSize; i++) {
@@ -81,6 +66,7 @@ public class Main {
 			}
 
 			// 물 이동 체크
+			int size = queue.size();
 			for (int i = 0; i < size; i++) {
 				int[] cur = queue.poll();
 
