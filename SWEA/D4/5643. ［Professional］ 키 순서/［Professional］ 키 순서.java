@@ -42,20 +42,19 @@ public class Solution {
 		visit = new boolean[N + 1];
 		visit[idx] = true;
 
-		// 나가는 애들 확인 - 재귀
 		for (int i = 1; i <= N; i++) {
-			if (i == idx || arr[idx][i] == 0)
+			if (i == idx)
 				continue;
-			visit[i] = true;
-			dfs(i);
-		}
 
-		// 들어가는 애들 확인 - 재귀
-		for (int i = 1; i <= N; i++) {
-			if (i == idx || arr[i][idx] == 0)
-				continue;
-			visit[i] = true;
-			dfs2(i);
+			if (arr[idx][i] != 0) {
+				visit[i] = true;
+				dfs(i);
+			}
+
+			if (arr[i][idx] != 0) {
+				visit[i] = true;
+				dfs2(i);
+			}
 		}
 
 		int count = 0;
