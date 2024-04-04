@@ -1,101 +1,105 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int[][] map;
-	static int[] used;
-	static boolean[][] visit;
-	static List<int[]> oList = new ArrayList<>();
-	static int result;
+
+	static int[][] map = new int[10][10];
+	static int[] paperCnt = { 0, 5, 5, 5, 5, 5 }; // 1 ~ 5 색종이의 현재 남은 수
+	static int ans;
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		map = new int[10][10];
-		visit = new boolean[10][10];
-		used = new int[6];
 
 		for (int i = 0; i < 10; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < 10; j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
-				if (map[i][j] == 1) {
-					map[i][j] *= -1;
-					oList.add(new int[] { i, j });
-				}
 			}
 		}
 
-		result = Integer.MAX_VALUE;
-		if (oList.size() == 0) {
-			result = 0;
-		} else {
-			dfs(0, 0, 0);
-		}
-		System.out.println(result == Integer.MAX_VALUE ? -1 : result);
+		ans = Integer.MAX_VALUE;
+		// 풀이 - dfs 완탐
+		dfs(0, 0, 0); // 좌표 0, 0 에서 0개 사용.
+
+		if (ans == Integer.MAX_VALUE)
+			ans = -1; // 모두 붙이지 못하는 경우
+
+		System.out.println(ans);
 	}
 
-	// count : 판에 붙은 종이 숫자
-	static void dfs(int count, int idx, int dep) {
-		if (idx == oList.size()) {
-			if (count == oList.size()) {
-				result = Math.min(result, dep);
-			}
+	// 현재 주어진 y, x 좌표에서 색종이를 붙이는 모든 경우를 따진다. ( 1 ~ 5)
+	// dfs() 이어가면서 좌표 개행 등 ...
+	static void dfs(int y, int x, int cnt) {
+		// 기저 조건
+		if (y == 9 && x > 9) {
+			// complete code
+			ans = Math.min(ans, cnt);
 			return;
 		}
 
-		int[] cur = oList.get(idx);
-		int y = cur[0];
-		int x = cur[1];
+		// 가지치기
+		if (ans <= cnt)
+			return;
 
-		if (!visit[y][x]) {
-			// 현재 위치에 색종이 놓기
-			// 크기 1 ~ 크기 5 모두 가능한 경우 확인
+		// 개행
+		if (x > 9) {
+			y = y + 1;
+			x = 0;
+		}
+
+		// 탐색 시작
+		if (map[y][x] == 1) { // 색종이를 놓을 수 있다.
+
+			// 5 가지 색종이를 모두 고려, 남은 색종이 수도 함께
+			// 1 인 칸에 색종이를 무조건 사용
 			for (int i = 1; i <= 5; i++) {
-				// 5번 다 씀
-				if (used[i] >= 5) {
-					continue;
-				}
-				// 현재 위치에 크기 i 의 색종이를 놓음.
-				if (valid(y, x, i)) {
-					attach(y, x, i, i);
-					used[i] += 1;
 
-					dfs(count + i * i, idx + 1, dep + 1);
+				// 색종이가 남아 있고, 그 색종이를 붙일 수 있으면 ( canAttach() )
+				if (paperCnt[i] > 0 && canAttach(y, x, i)) {
 
-					attach(y, x, i, -1);
-					used[i] -= 1;
+					// 위에서 다진 공간에 i 색종이 붙인다.
+					attach(y, x, i, 0);
+
+					// 남은 i 색종이 수를 감소
+					paperCnt[i]--;
+
+					// 색종이 너비만큼 오른쪽을 이동, dfs() 계속 진행
+					dfs(y, x + i, cnt + 1);
+
+					// 위에서 따진 공간에 i 색종이 붙인다.(원복)
+					attach(y, x, i, 1);
+
+					// 남은 i 색종이 수를 감소
+					paperCnt[i]++;
 				}
 			}
+
 		} else {
-			dfs(count, idx + 1, dep);
+			dfs(y, x + 1, cnt);
 		}
 	}
 
-	static void attach(int y, int x, int m, int state) {
-		for (int i = y; i < y + m; i++) {
-			for (int j = x; j < x + m; j++) {
-				map[i][j] = state;
-				if (state > 0)
-					visit[i][j] = true;
-				else
-					visit[i][j] = false;
+	static void attach(int y, int x, int size, int num) { // 붙일 때 원복 모두
+		// 놓을 수 있는 공간을 탐색하면서 모두 1인지 확인
+		for (int i = y; i < y + size; i++) {
+			for (int j = x; j < x + size; j++) {
+				map[i][j] = num;
 			}
 		}
 	}
 
-	// m 크기 색종이 가능여부
-	static boolean valid(int y, int x, int m) {
-		for (int i = y; i < y + m; i++) {
-			for (int j = x; j < x + m; j++) {
-				// 유효
-				if (i >= 10 || j >= 10 || map[i][j] == 0 || visit[i][j]) {
+	static boolean canAttach(int y, int x, int size) {
+		// size 색종이를 붙이기에 10x10 range 를 벗어나는지 확인
+		if (y + size > 10 || x + size > 10)
+			return false;
+		// 놓을 수 있는 공간을 탐색하면서 모두 1인지 확인
+		for (int i = y; i < y + size; i++) {
+			for (int j = x; j < x + size; j++) {
+				if (map[i][j] == 0)
 					return false;
-				}
 			}
 		}
-		return true;
+		return true; // 여기까지 오면 모두 1
 	}
 }
