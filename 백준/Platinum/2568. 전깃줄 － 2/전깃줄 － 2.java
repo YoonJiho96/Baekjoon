@@ -40,7 +40,6 @@ public class Main {
 				int pos = Arrays.binarySearch(temp, 0, len, lines[i]);
 
 				if (pos >= 0) {
-					lisPos[pos] = pos + 1;
 					continue;
 				}
 
