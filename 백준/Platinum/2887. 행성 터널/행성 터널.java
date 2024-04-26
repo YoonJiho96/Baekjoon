@@ -40,6 +40,7 @@ public class Main {
 		}
 
 		int ans = 0;
+		int count = 0;
 		// 짧은 간선부터 계산
 		parent = new int[N];
 		makeSet();
@@ -47,7 +48,10 @@ public class Main {
 			Edge cur = pq.poll();
 			if (union(cur.a, cur.b)) {
 				ans += getValue(input.get(cur.a), input.get(cur.b));
+				count += 1;
 			}
+			if (count >= N - 1)
+				break;
 		}
 		System.out.println(ans);
 	}
