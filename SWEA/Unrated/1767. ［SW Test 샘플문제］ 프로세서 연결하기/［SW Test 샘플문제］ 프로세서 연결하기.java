@@ -62,10 +62,9 @@ public class Solution {
 				int l = connect(core[0], core[1], i, -1);
 				dfs(idx + 1, len + l, c + 1);
 				connect(core[0], core[1], i, 0);
-			} else {
-				dfs(idx + 1, len, c);
 			}
 		}
+		dfs(idx + 1, len, c);
 	}
 
 	static boolean canConnect(int y, int x, int dir) {
