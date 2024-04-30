@@ -25,6 +25,9 @@ public class Main {
 
 		// 최소 시간. 최대 높이
 		for (int h = 0; h <= 256; h++) { // h: 목표 높이
+			if (h < heightAns)
+				continue;
+
 			int blocks = B; // 블록 현황
 			int getBlock = 0;
 			int usedBlock = 0; // 사용한 블록
