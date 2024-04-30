@@ -1,115 +1,103 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
-	static int T, N, lenSum, coreCount;
-	static StringBuilder sb = new StringBuilder();
-	static int[][] input;
+	static int T, N, count, result;
+	static int[][] map;
 	static List<int[]> coreList;
-	static int[] dy = { -1, 1, 0, 0 };
-	static int[] dx = { 0, 0, -1, 1 };
+	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+
 		T = Integer.parseInt(br.readLine());
-
 		for (int t = 1; t <= T; t++) {
-			coreList = new ArrayList<>();
-
 			N = Integer.parseInt(br.readLine());
-			input = new int[N][N];
+
+			map = new int[N][N];
+			coreList = new ArrayList<>();
+			resultMap = new HashMap<>();
+			count = 0;
 
 			for (int i = 0; i < N; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
+				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < N; j++) {
-					input[i][j] = Integer.parseInt(st.nextToken());
-					if (input[i][j] == 1) {
-						if (i == 0 || i == N - 1 || j == 0 || j == N - 1) {
+					map[i][j] = Integer.parseInt(st.nextToken());
+					if (map[i][j] == 1) {
+						if (i == 0 || j == 0 || i == (N - 1) || j == (N - 1))
 							continue;
-						}
 						coreList.add(new int[] { i, j });
 					}
 				}
 			}
 
-			lenSum = Integer.MAX_VALUE;
-			coreCount = 0;
-
 			dfs(0, 0, 0);
-			lenSum = lenSum == Integer.MAX_VALUE ? 0 : lenSum;
-			sb.append("#").append(t).append(" ").append(lenSum).append("\n");
+			int max = Collections.max(resultMap.keySet());
+			result = resultMap.get(max);
+			sb.append("#").append(t).append(" ").append(result).append("\n");
 		}
 		System.out.println(sb);
 	}
 
-	static void connect(int y, int x, int dir, int state) {
-		int ny = y;
-		int nx = x;
-		while (true) {
-			ny += dy[dir];
-			nx += dx[dir];
+	static int[] dy = { -1, 1, 0, 0 };
+	static int[] dx = { 0, 0, -1, 1 };
+	static Map<Integer, Integer> resultMap;
 
-			if (ny < 0 || nx < 0 || ny >= N || nx >= N) {
-				return;
-			}
-
-			if (input[ny][nx] == 1) {
-				return;
-			}
-
-			input[ny][nx] = state;
-		}
-	}
-
-	static int check(int y, int x, int dir) {
-		int len = 0;
-		// 방향으로 진행
-		int ny = y;
-		int nx = x;
-		while (true) {
-			ny += dy[dir];
-			nx += dx[dir];
-
-			if (ny < 0 || nx < 0 || ny >= N || nx >= N) {
-				break;
-			}
-			if (input[ny][nx] == 1 || input[ny][nx] == 2) {
-				return -1;
-			}
-			len++;
-		}
-		return len;
-	}
-
-	static void dfs(int idx, int count, int connected) {
-		// 완료
+	static void dfs(int idx, int len, int c) {
 		if (idx == coreList.size()) {
-			if (connected == coreCount) {
-				lenSum = Math.min(lenSum, count);
-			} else if (connected > coreCount) {
-				lenSum = count;
-				coreCount = connected;
+			if (resultMap.containsKey(c)) {
+				int min = Math.min(len, resultMap.get(c));
+				resultMap.put(c, min);
+			} else {
+				resultMap.put(c, len);
 			}
 			return;
 		}
 
-		int[] cur = coreList.get(idx);
-		int y = cur[0];
-		int x = cur[1];
+		int[] core = coreList.get(idx);
 
-		// 끝에 있으면 패스
-		// 4방향 체크
 		for (int i = 0; i < 4; i++) {
-			int num = check(y, x, i);
-			if (num >= 0) {
-				connect(y, x, i, 2);
-				dfs(idx + 1, count + num, connected + 1);
-				connect(y, x, i, 0);
+			if (canConnect(core[0], core[1], i)) {
+				int l = connect(core[0], core[1], i, -1);
+				dfs(idx + 1, len + l, c + 1);
+				connect(core[0], core[1], i, 0);
+			} else {
+				dfs(idx + 1, len, c);
 			}
 		}
-		dfs(idx + 1, count, connected);
+	}
+
+	static boolean canConnect(int y, int x, int dir) {
+		int ny = y;
+		int nx = x;
+
+		while (true) {
+			ny = ny + dy[dir];
+			nx = nx + dx[dir];
+			if (ny < 0 || nx < 0 || ny >= N || nx >= N) {
+				return true;
+			}
+			if (map[ny][nx] != 0) {
+				return false;
+			}
+		}
+	}
+
+	static int connect(int y, int x, int dir, int state) {
+		int len = 0;
+		int ny = y;
+		int nx = x;
+
+		while (true) {
+			ny = ny + dy[dir];
+			nx = nx + dx[dir];
+			if (ny < 0 || nx < 0 || ny >= N || nx >= N) {
+				break;
+			}
+			map[ny][nx] = state;
+			len += 1;
+		}
+		return len;
 	}
 }
