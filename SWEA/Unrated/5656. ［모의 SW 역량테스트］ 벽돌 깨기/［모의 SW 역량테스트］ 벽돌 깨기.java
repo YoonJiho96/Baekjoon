@@ -1,13 +1,13 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Queue;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int T, N, W, H, count, total, max;
-	static int[][] map, copymap;
+	static int T, N, W, H, count, result;
+	static int[][] map;
 	static StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) throws Exception {
@@ -20,110 +20,120 @@ public class Solution {
 			W = Integer.parseInt(st.nextToken());
 			H = Integer.parseInt(st.nextToken());
 
-			total = 0;
-			max = 0;
 			map = new int[H][W];
+
 			for (int i = 0; i < H; i++) {
 				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < W; j++) {
 					map[i][j] = Integer.parseInt(st.nextToken());
-					if (map[i][j] != 0) {
-						total++;
-					}
 				}
 			}
 
 			tgt = new int[N];
-			comb(0);
-			sb.append("#").append(t).append(" ").append(total - max).append("\n");
+			select = new boolean[W];
+			result = Integer.MAX_VALUE;
+			perm(0);
+
+			sb.append("#").append(t).append(" ").append(result).append("\n");
 		}
 		System.out.println(sb);
 	}
 
 	static int[] tgt;
+	static boolean[] select;
 
-	static void comb(int tgtIdx) {
+	static void perm(int tgtIdx) {
 		if (tgtIdx == N) {
-			check();
+			int num = check();
+			result = Math.min(result, num);
 			return;
 		}
 
 		for (int i = 0; i < W; i++) {
 			tgt[tgtIdx] = i;
-			comb(tgtIdx + 1);
+			select[i] = true;
+			perm(tgtIdx + 1);
+			select[i] = false;
 		}
 	}
 
 	static int[] dy = { -1, 1, 0, 0 };
 	static int[] dx = { 0, 0, -1, 1 };
 
-	// 현재 구슬 순서에 따라 시뮬레이션
-	static void check() {
-		count = 0;
-		copymap = copymap();
-		for (int i = 0; i < N; i++) {
-			int x = tgt[i];
+	static int check() {
+		int[][] copyMap = copyMap();
 
+		Queue<int[]> queue = new ArrayDeque<>();
+
+		// 전체 반복
+		for (int i = 0; i < N; i++) {
+
+			// 첫 부서지는 블록 찾기
 			for (int j = 0; j < H; j++) {
-				if (copymap[j][x] != 0) {
-					bomb(j, x);
+				if (copyMap[j][tgt[i]] > 0) {
+					queue.offer(new int[] { j, tgt[i] });
 					break;
 				}
 			}
 
-			// 중력 처리
-			for (int k = 0; k < W; k++) {
-				Stack<Integer> stack = new Stack<>();
-				for (int j = 0; j < H; j++) {
-					if (copymap[j][k] != 0) {
-						stack.push(copymap[j][k]);
-						copymap[j][k] = 0;
+			// 부수기
+			while (!queue.isEmpty()) {
+				// 부술 블록 꺼내기
+				// 현재 블록 부수기
+				int[] cur = queue.poll();
+				int num = copyMap[cur[0]][cur[1]];
+				copyMap[cur[0]][cur[1]] = 0;
+
+				// 블록 범위 탐색
+				// 범위 내의 블록 큐에 추가
+				for (int j = 0; j < 4; j++) {
+					int ny = cur[0];
+					int nx = cur[1];
+
+					for (int k = 1; k < num; k++) {
+						ny = ny + dy[j];
+						nx = nx + dx[j];
+
+						if (ny < 0 || nx < 0 || ny >= H || nx >= W)
+							continue;
+						if (copyMap[ny][nx] > 0) {
+							queue.offer(new int[] { ny, nx });
+						}
+					}
+				}
+			}
+
+			// 내려감
+			for (int j = 0; j < W; j++) {
+				Deque<Integer> stack = new ArrayDeque<>();
+				for (int k = 0; k < H; k++) {
+					if (copyMap[k][j] > 0) {
+						stack.push(copyMap[k][j]);
+						copyMap[k][j] = 0;
 					}
 				}
 
-				int y = H - 1;
-				while (!stack.isEmpty()) {
-					copymap[y--][k] = stack.pop();
+				for (int k = (H - 1); k >= 0; k--) {
+					if (stack.isEmpty())
+						break;
+					copyMap[k][j] = stack.poll();
 				}
 			}
 		}
-	}
 
-	static void bomb(int y, int x) {
-		Queue<int[]> queue = new ArrayDeque<>();
-		boolean[][] select = new boolean[H][W];
-
-		select[y][x] = true;
-		queue.offer(new int[] { y, x });
-
-		while (!queue.isEmpty()) {
-			int[] cur = queue.poll();
-			int range = copymap[cur[0]][cur[1]];
-
-			if (copymap[cur[0]][cur[1]] != 0)
-				count++;
-			copymap[cur[0]][cur[1]] = 0; // 터뜨리기
-
-			for (int i = 0; i < 4; i++) {
-				int ny = cur[0];
-				int nx = cur[1];
-
-				for (int j = 0; j < range - 1; j++) {
-					ny += dy[i];
-					nx += dx[i];
-
-					if (ny < 0 || nx < 0 || ny >= H || nx >= W || copymap[ny][nx] == 0)
-						continue;
-					select[ny][nx] = true;
-					queue.offer(new int[] { ny, nx });
-				}
+		// 갯수 세기
+		int count = 0;
+		for (int i = 0; i < H; i++) {
+			for (int j = 0; j < W; j++) {
+				if (copyMap[i][j] > 0)
+					count += 1;
 			}
 		}
-		max = Math.max(max, count);
+		return count;
 	}
 
-	static int[][] copymap() {
-		int[][] temp = new int[H][];
+	static int[][] copyMap() {
+		int[][] temp = new int[H][W];
 		for (int i = 0; i < H; i++) {
 			temp[i] = map[i].clone();
 		}
