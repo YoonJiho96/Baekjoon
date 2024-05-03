@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N, M, minResult = Integer.MAX_VALUE;
+	static int N, M, ans = Integer.MAX_VALUE;
 	static int[][] map;
-	static List<int[]> homes = new ArrayList<>(), chickens = new ArrayList<>();
-	static int[][] tgt;
+	static List<Pos> hList = new ArrayList<>();
+	static List<Pos> cList = new ArrayList<>();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,47 +18,59 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 
 		map = new int[N][N];
-
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
-				int n = Integer.parseInt(st.nextToken());
-				map[i][j] = n;
-				if (n == 1) {
-					homes.add(new int[] { i, j });
-				} else if (n == 2) {
-					chickens.add(new int[] { i, j });
-				}
+				map[i][j] = Integer.parseInt(st.nextToken());
+				if (map[i][j] == 1)
+					hList.add(new Pos(i, j));
+				if (map[i][j] == 2)
+					cList.add(new Pos(i, j));
 			}
 		}
 
-		// chickens 에서 M 개 뽑기
-		tgt = new int[M][2];
+		// M 크기 조합
+		tgt = new int[M];
 		comb(0, 0);
-
-		System.out.println(minResult);
+		System.out.println(ans);
 	}
 
-	static void comb(int srcIdx, int tgtIdx) {
-		// 조합 완성
-		if (tgtIdx == M) {
-			// 현재 치킨집과 집의 최소거리 계산
-			int totalMin = 0;
-			for (int[] h : homes) {
-				int min = Integer.MAX_VALUE;
-				for (int[] c : tgt) {
-					int dis = Math.abs(c[0] - h[0]) + Math.abs(c[1] - h[1]);
-					min = Math.min(dis, min);
-				}
-				totalMin += min;
+	static int getDis(Pos p1, Pos p2) {
+		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+	}
+
+	static int check() {
+		int sum = 0;
+		for (int i = 0; i < hList.size(); i++) {
+			int len = Integer.MAX_VALUE;
+			for (int j = 0; j < tgt.length; j++) {
+				len = Math.min(len, getDis(hList.get(i), cList.get(tgt[j])));
 			}
-			minResult = Math.min(totalMin, minResult);
+			sum += len;
+		}
+		return sum;
+	}
+
+	static int[] tgt;
+
+	static void comb(int srcIdx, int tgtIdx) {
+		if (tgtIdx == M) {
+			ans = Math.min(ans, check());
 			return;
 		}
 
-		for (int i = srcIdx; i < chickens.size(); i++) {
-			tgt[tgtIdx] = chickens.get(i);
+		for (int i = srcIdx; i < cList.size(); i++) {
+			tgt[tgtIdx] = i;
 			comb(i + 1, tgtIdx + 1);
+		}
+	}
+
+	static class Pos {
+		int y, x;
+
+		public Pos(int y, int x) {
+			this.y = y;
+			this.x = x;
 		}
 	}
 }
