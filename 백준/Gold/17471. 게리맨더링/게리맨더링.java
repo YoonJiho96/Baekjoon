@@ -5,20 +5,13 @@ import java.util.Arrays;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-// 2 개의 그룹 나눈다 => 부분집합 => select 배열 선택/비선택
-// 부분집합이 유효한지? 각 그룹의 선택된 수 최소 1개 이상, 모두 연결
-// 각각 그룹 모두 연결 확인 => 그래프의 자료구조(인접행렬) 이용해서 완탐. 갈 수 있는 곳을 모두 방문
-// <= 모두 갈 수 있으면 모두 연결, 하나라도 못 가면 모두 연결 X
-// 모든 조건이 통과되면 A, B 두 개의 인구수를 합하고, 차이의 최소값을 구한다.
-// 선거구별 인구수는 인접행렬 0 가 dummy. 이 곳을 활용
 public class Main {
 	static int N, min;
 	static int[][] matrix;
-	static boolean[] select; // 부분집합 사용, true : A, false : B
-	static boolean[] visit; // 모두 연결되어 있는지 판단에 사용, 갈 수 있는 곳이면 true
+	static boolean[] select;
+	static boolean[] visit;
 
-	// 갈 수 있는 모든 곳을 방문했는데 visit[] 에 false가 있다면 모두 연결 X
-	static Queue<Integer> queue = new ArrayDeque<>(); // 모두 연결 완탐 : BFS
+	static Queue<Integer> queue = new ArrayDeque<>();
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -45,7 +38,7 @@ public class Main {
 			}
 		}
 
-		subset(1); // 1 구역 선택/비선택...
+		subset(1);
 		if (min == Integer.MAX_VALUE) {
 			System.out.println(-1);
 		} else {
@@ -53,23 +46,22 @@ public class Main {
 		}
 	}
 
-	// 이미 두 개의 그룹으로 나뉜 상태 <= select 배열에 true/false 로 구분.
-	// 유효성 검증 (그룹별로 1개이상, 두 그룹 모두 연결) 후에 min 갱신
 	static void check() {
-		// visit, queue
 		Arrays.fill(visit, false);
 		queue.clear();
 
-		// A : select:true
 		for (int i = 1; i <= N; i++) {
 			if (select[i]) {
 				visit[i] = true;
 				queue.offer(i);
-				break; // 한 구역만 넣고 bfs 준비
+				break;
 			}
 		}
-		if (queue.size() == 0)
+
+		if (queue.size() == 0) {
 			return;
+		}
+
 		while (!queue.isEmpty()) {
 			int v = queue.poll();
 			for (int i = 1; i <= N; i++) {
@@ -81,16 +73,18 @@ public class Main {
 			}
 		}
 
-		// B : select:false
 		for (int i = 1; i <= N; i++) {
 			if (!select[i]) {
 				visit[i] = true;
 				queue.offer(i);
-				break; // 한 구역만 넣고 bfs 준비
+				break;
 			}
 		}
-		if (queue.size() == 0)
+
+		if (queue.size() == 0) {
 			return;
+		}
+
 		while (!queue.isEmpty()) {
 			int v = queue.poll();
 			for (int i = 1; i <= N; i++) {
@@ -102,23 +96,23 @@ public class Main {
 			}
 		}
 
-		// 모든 구역이 모두 연결되었는지 확인
 		for (int i = 1; i <= N; i++) {
-			if(!visit[i]) return; // 연결되지 않은 구역 발견
+			if (!visit[i])
+				return;
 		}
-		
-		// 유효성 검증 완료
+
 		int sumA = 0;
 		int sumB = 0;
-		for(int i=1; i<= N; i++) {
-			if(select[i]) sumA += matrix[i][0];
-			else sumB += matrix[i][0];
+		for (int i = 1; i <= N; i++) {
+			if (select[i])
+				sumA += matrix[i][0];
+			else
+				sumB += matrix[i][0];
 		}
 		min = Math.min(min, Math.abs(sumA - sumB));
 	}
 
-	static void subset(int srcIdx) { // 1 ~ > N 선택/비선택
-		// 기저 조건
+	static void subset(int srcIdx) {
 		if (srcIdx == N + 1) {
 			check();
 			return;
