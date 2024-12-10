@@ -1,99 +1,52 @@
 import java.io.BufferedReader;
-
 import java.io.InputStreamReader;
-
-import java.util.StringTokenizer;
+import java.util.Arrays;
 
 public class Main {
+    static int N, d, k, c;
+    static int[] sushi, info;
 
-  // N 접시 수
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int[] inputs = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
-  // d 초밥 가짓수
+        N = inputs[0];  // 접시 수
+        d = inputs[1];  // 초밥 가짓 수
+        k = inputs[2];  // 연속 접시 수
+        c = inputs[3];  // 쿠폰 초밥 번호
 
-  // k 연속해서 먹는 접시의 수
+        sushi = new int[N];
+        for (int n = 0; n < N; n++) {
+            sushi[n] = Integer.parseInt(br.readLine());
+        }
 
-  // c 쿠폰 번호
+        info = new int[d + 1];
+        int distinctCount = 0; // 현재 윈도우 내 초밥의 가짓수
 
-  static int N, d, k, c;
+        // 초기 윈도우 구성
+        for (int i = 0; i < k; i++) {
+            if (info[sushi[i]] == 0) distinctCount++;
+            info[sushi[i]]++;
+        }
 
-  static int[] input, sushi;
+        int max = distinctCount + (info[c] == 0 ? 1 : 0);;
 
-  public static void main(String[] args) throws Exception {
+        for (int start = 1; start < N; start++) {
+            // 제거할 초밥
+            int remove = sushi[start - 1];
+            info[remove]--;
+            if (info[remove] == 0) distinctCount--;
 
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            // 추가할 초밥
+            int end = (start + k - 1) % N;
+            int add = sushi[end];
+            if (info[add] == 0) distinctCount++;
+            info[add]++;
 
-    StringTokenizer st = new StringTokenizer(br.readLine());
-
-    N = Integer.parseInt(st.nextToken());
-
-    d = Integer.parseInt(st.nextToken());
-
-    k = Integer.parseInt(st.nextToken());
-
-    c = Integer.parseInt(st.nextToken());
-
-    input = new int[N];
-
-    sushi = new int[d + 1];
-
-    for (int i = 0; i < N; i++) {
-
-      input[i] = Integer.parseInt(br.readLine());
-
+            // 쿠폰 초밥 포함여부 체크
+            int currentCount = distinctCount + (info[c] == 0 ? 1 : 0);
+            max = Math.max(max, currentCount);
+        }
+        System.out.println(max);
     }
-
-    // 초기화
-
-    for (int i = 0; i < k; i++) {
-
-      sushi[input[i]]++;
-
-    }
-
-    int count = 0;
-
-    int max = 0;
-
-    for (int i = 1; i <= d; i++) {
-
-      if (sushi[i] > 0) {
-
-        count++;
-
-      }
-
-    }
-
-    for (int i = 1; i < N; i++) {
-
-      int start = i;
-
-      int end = (i + k - 1) % N;
-
-      sushi[input[start - 1]]--;
-
-      if (sushi[input[start - 1]] == 0) count--;
-
-      if (sushi[input[end]] == 0) count++;
-
-      sushi[input[end]]++;
-
-max = Math.max(max, count);
-
-      if (sushi[c] == 0) {
-
-        count++;
-
-        max = Math.max(max, count);
-
-        count--;
-
-      }
-
-    }
-
-    System.out.println(max);
-
-  }
-
 }
