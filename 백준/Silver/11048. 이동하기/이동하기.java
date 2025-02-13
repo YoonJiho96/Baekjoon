@@ -11,7 +11,6 @@ public class Main {
         int M = Integer.parseInt(st.nextToken());
 
         int[][] arr = new int[N][M];
-
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
@@ -19,21 +18,21 @@ public class Main {
             }
         }
 
-        int[][] dp = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if ((i - 1) >= 0 && (j - 1) >= 0) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j]);
-                }
-                if ((i - 1) >= 0) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j]);
-                }
-                if ((j - 1) >= 0) {
-                    dp[i][j] = Math.max(dp[i][j], dp[i][j - 1]);
-                }
-                dp[i][j] += arr[i][j];
+        int[] dp = new int[M];
+        dp[0] = arr[0][0];
+        for (int j = 1; j < M; j++) {
+            dp[j] = dp[j - 1] + arr[0][j];
+        }
+
+        for (int i = 1; i < N; i++) {
+            int prev = dp[0];
+            dp[0] = dp[0] + arr[i][0];
+            for (int j = 1; j < M; j++) {
+                int temp = dp[j];
+                dp[j] = Math.max(Math.max(dp[j], dp[j - 1]), prev) + arr[i][j];
+                prev = temp;
             }
         }
-        System.out.println(dp[N - 1][M - 1]);
+        System.out.println(dp[M - 1]);
     }
 }
