@@ -13,28 +13,25 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        // 0 : 증가, 1 : 감소
-        int[][] dp = new int[N][2];
-        dp[0][0] = 1;
-        dp[0][1] = 1;
+        int MAX = 0;
+        int before = arr[0];
+        int ascCount = 0;
+        int descCount = 0;
 
-        int MAX = 1;
-
-        for (int i = 1; i < N; i++) {
-            int cur = arr[i];
-            if (cur >= arr[i - 1]) {
-                dp[i][0] = dp[i - 1][0] + 1;
+        for (int num : arr) {
+            if (num >= before) {
+                MAX = Math.max(++ascCount, MAX);
             } else {
-                dp[i][0] = 1;
+                ascCount = 1;
             }
 
-            if (cur <= arr[i - 1]) {
-                dp[i][1] = dp[i - 1][1] + 1;
+            if (num <= before) {
+                MAX = Math.max(++descCount, MAX);
             } else {
-                dp[i][1] = 1;
+                descCount = 1;
             }
 
-            MAX = Math.max(MAX, Math.max(dp[i][0], dp[i][1]));
+            before = num;
         }
 
         System.out.println(MAX);
