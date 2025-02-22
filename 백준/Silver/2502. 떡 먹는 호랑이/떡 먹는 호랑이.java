@@ -6,24 +6,24 @@ public class Main {
         int D = sc.nextInt();
         int K = sc.nextInt();
 
-        int[][] dp = new int[D + 1][2];
-
-        dp[1][0] = dp[2][1] = 1;
-        for (int i = 3; i <= D; i++) {
-            dp[i][0] = dp[i - 1][1];
-            dp[i][1] = dp[i - 1][0] + dp[i - 1][1];
+        int a = 1, b = 1;
+        for (int i = 3; i < D; i++) {
+            int temp = b;
+            b = a + b;
+            a = temp;
         }
-
-        int A = 1;
-        while (true) {
-            for (int i = 1; i <= A; i++) {
-                if (A * dp[D][1] + i * dp[D][0] == K) {
-                    System.out.println(i);
+        
+        for (int B = 1; B < K; B++) {
+            int remaining = K - b * B;
+            if (remaining <= 0) continue;
+            if (remaining % a == 0) {
+                int A = remaining / a;
+                if (A <= B) {
                     System.out.println(A);
+                    System.out.println(B);
                     return;
                 }
             }
-            A++;
         }
     }
 }
