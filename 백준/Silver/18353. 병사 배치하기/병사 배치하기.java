@@ -1,6 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -14,17 +14,37 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int[] dp = new int[N];
-
+        int[] neg = new int[N];
         for (int i = 0; i < N; i++) {
-            dp[i] = 1;
-            for (int j = 0; j < i; j++) {
-                if (arr[i] < arr[j]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
+            neg[i] = -arr[i];
+        }
+
+        ArrayList<Integer> lis = new ArrayList<>();
+        for (int x : neg) {
+            if (lis.isEmpty() || x > lis.get(lis.size() - 1)) {
+                lis.add(x);
+            } else {
+                int idx = lowerBound(lis, x);
+                lis.set(idx, x);
             }
         }
 
-        System.out.println(N - Arrays.stream(dp).max().orElse(0));
+        int ldsLength = lis.size();
+        System.out.println(N - ldsLength);
+    }
+
+    public static int lowerBound(ArrayList<Integer> lis, int target) {
+        int lo = 0, hi = lis.size() - 1;
+        int ans = hi + 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (lis.get(mid) >= target) {
+                ans = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return ans;
     }
 }
