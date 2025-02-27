@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -8,19 +7,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
 
-        // 0 : XO
-        // 1 : OX
-        // 2 : OO
-        long[][] dp = new long[N + 1][3];
-        dp[1][0] = dp[1][1] = dp[1][2] = 1;
+        long[] dp = new long[N + 1];
+        dp[0] = 1;
+        dp[1] = 3;
 
         for (int i = 2; i <= N; i++) {
-            dp[i][0] = (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][2]) % MOD;
-            dp[i][1] = (dp[i - 1][0] + dp[i - 1][1] + dp[i - 1][2]) % MOD;
-            // OO 의 경우, 이번 줄에서 최소 한명이라도 불려가야 함.
-            // => 이전 줄이 OO 인 경우는 제외.
-            dp[i][2] = (dp[i - 1][0] + dp[i - 1][1]) % MOD;
+            // dp[i - 1] * 2 : 현재 줄이 OX, XO 인 두 가지 경우.
+            // dp[i - 2] * 2 : 현재 줄을 OO로 채우는 경우인데, 이때 i-1번째 줄은 OO가 될 수 없으므로 가능한 경우는 2가지
+            dp[i] = ((dp[i - 1] * 2) + (dp[i - 2] * 2)) % MOD;
         }
-        System.out.println(Arrays.stream(dp[N]).sum() % MOD);
+        System.out.println(dp[N]);
     }
 }
