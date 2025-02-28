@@ -24,7 +24,6 @@ public class Main {
             int max = Integer.MIN_VALUE;
             for (int i = 1; i <= N; i++) {
                 max = Math.max(max, dp[i]);
-                max = Math.max(max, arr[i]);
                 for (int j = 1; j < i; j++) {
                     int num = dp[i] - dp[j];
                     max = Math.max(max, num);
