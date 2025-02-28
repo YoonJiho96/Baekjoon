@@ -6,28 +6,20 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
+
         while (T-- > 0) {
             int N = Integer.parseInt(br.readLine());
             StringTokenizer st = new StringTokenizer(br.readLine());
 
-            int[] arr = new int[N + 1];
-            int[] dp = new int[N + 1];  // i 까지의 누적합
-            for (int i = 1; i <= N; i++) {
-                arr[i] = Integer.parseInt(st.nextToken());
-                if (i == 1) {
-                    dp[i] = arr[i];
-                } else {
-                    dp[i] = dp[i - 1] + arr[i];
-                }
-            }
-
             int max = Integer.MIN_VALUE;
-            for (int i = 1; i <= N; i++) {
-                max = Math.max(max, dp[i]);
-                for (int j = 1; j < i; j++) {
-                    int num = dp[i] - dp[j];
-                    max = Math.max(max, num);
-                }
+            int curSum = 0;
+
+            for (int i = 0; i < N; i++) {
+                int num = Integer.parseInt(st.nextToken());
+                
+                // 현재 수가 더 클 경우, 현재 수 부터 누적합을 시작하는 것이 더 이득
+                curSum = Math.max(num, curSum + num);
+                max = Math.max(max, curSum);
             }
             System.out.println(max);
         }
