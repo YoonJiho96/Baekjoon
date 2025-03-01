@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 
 public class Main {
     static int N;
@@ -37,8 +38,8 @@ public class Main {
                 int y2 = y + 1;
                 int x2 = x;
 
-                if (x1 < N && map[y][x] != map[y1][x1]) checkValid(y, x, y1, x1);
-                if (y2 < N && map[y][x] != map[y2][x2]) checkValid(y, x, y2, x2);
+                if (x1 < N) checkValid(y, x, y1, x1);
+                if (y2 < N) checkValid(y, x, y2, x2);
             }
         }
     }
@@ -48,29 +49,32 @@ public class Main {
     static void checkValid(int y1, int x1, int y2, int x2) {
         swap(y1, x1, y2, x2);
 
-        // 체크
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                char cur = map[i][j];
-                int count = 0;
+        // 교환 영향 받은 행,열만 체크
+        HashSet<Integer> rows = new HashSet<>();
+        HashSet<Integer> cols = new HashSet<>();
+        rows.add(y1);
+        rows.add(y2);
+        cols.add(x1);
+        cols.add(x2);
 
-                // 가로 체크
-                for (int k = j; k < N; k++) {
-                    if (map[i][k] == cur) count++;
-                    else {
-                        break;
-                    }
-                }
+        for (int y : rows) {
+            int count = 1;
+            for (int j = 1; j < N; j++) {
+                if (map[y][j] == map[y][j - 1])
+                    count++;
+                else
+                    count = 1;
                 answer = Math.max(answer, count);
-                count = 0;
+            }
+        }
 
-                // 세로 체크
-                for (int k = i; k < N; k++) {
-                    if (map[k][j] == cur) count++;
-                    else {
-                        break;
-                    }
-                }
+        for (int x : cols) {
+            int count = 1;
+            for (int j = 1; j < N; j++) {
+                if (map[j][x] == map[j - 1][x])
+                    count++;
+                else
+                    count = 1;
                 answer = Math.max(answer, count);
             }
         }
