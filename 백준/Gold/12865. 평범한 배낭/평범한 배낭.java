@@ -22,8 +22,8 @@ public class Main {
         int[] dp = new int[K + 1];
 
         for (int i = 0; i < N; i++) {
-            for (int j = K - w[i]; j >= 0; j--) {
-                dp[j + w[i]] = Math.max(dp[j + w[i]], dp[j] + v[i]);
+            for (int j = K; j >= w[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - w[i]] + v[i]);
             }
         }
 
