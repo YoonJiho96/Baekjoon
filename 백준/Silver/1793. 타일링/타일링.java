@@ -19,9 +19,11 @@ public class Main {
         }
 
         String input = null;
+        StringBuilder sb = new StringBuilder();
         while ((input = br.readLine()) != null) {
             int n = Integer.parseInt(input);
-            System.out.println(dp[n]);
+            sb.append(dp[n]).append("\n");
         }
+        System.out.println(sb);
     }
 }
