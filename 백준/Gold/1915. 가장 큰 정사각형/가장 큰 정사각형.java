@@ -10,34 +10,25 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
+        int max = 0;
         int[][] arr = new int[N + 1][M + 1];
-        int[][] dp = new int[N + 1][M + 1];
         for (int i = 1; i <= N; i++) {
             char[] input = br.readLine().toCharArray();
             for (int j = 1; j <= M; j++) {
                 arr[i][j] = input[j - 1] - '0';
-                dp[i][j] = arr[i][j];
-            }
-        }
 
-        int max = 0;
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= M; j++) {
+                // 바로 계산
                 if (arr[i][j] == 0) continue;
+                int min = Math.min(arr[i - 1][j - 1], Math.min(arr[i][j - 1], arr[i - 1][j]));
 
-                int lt = dp[i - 1][j - 1];
-                int left = dp[i][j - 1];
-                int top = dp[i - 1][j];
-                int min = Math.min(lt, Math.min(left, top));
-
-                if (min == 0) dp[i][j] = 1;
-                else {
-                    dp[i][j] = min + 1;
-                }
-
-                max = Math.max(max, dp[i][j]);
+                // 최대 길이
+                if (min == 0) arr[i][j] = 1;
+                else arr[i][j] = min + 1;
+                max = Math.max(max, arr[i][j]);
             }
         }
+
+        // 크기 계산
         System.out.println(max * max);
     }
 }
