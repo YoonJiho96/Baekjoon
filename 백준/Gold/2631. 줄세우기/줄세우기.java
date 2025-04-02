@@ -1,30 +1,34 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
 
-        int[] arr = new int[N + 1];
-        for (int i = 1; i <= N; i++) {
+        int[] arr = new int[N];
+        for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(br.readLine());
         }
 
-        int[] dp = new int[N + 1];
-        Arrays.fill(dp, 1);
+        // LIS : 이분탐색
+        List<Integer> list = new ArrayList<>();
+        for (int n : arr) {
+            int pos = Collections.binarySearch(list, n);
+            if (pos < 0) {
+                pos = -pos - 1;
+            }
 
-        // LIS
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j < i; j++) {
-                if (arr[i] > arr[j]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
+            if (pos == list.size()) {
+                list.add(n);
+            } else {
+                list.set(pos, n);
             }
         }
 
-        int max = Arrays.stream(dp).max().getAsInt();
-        System.out.println(N - max);
+        System.out.println(N - list.size());
     }
 }
