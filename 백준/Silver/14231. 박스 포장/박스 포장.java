@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -15,16 +16,18 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int[] dp = new int[N];
-        Arrays.fill(dp, 1);
-        for (int i = 1; i < N; i++) {
-            for (int j = 0; j < i; j++) {
-                if (arr[i] > arr[j]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            int pos = Arrays.binarySearch(list.toArray(), arr[i]);
+            if (pos < 0) pos = -(pos + 1);
+
+            if (pos == list.size()) {
+                list.add(arr[i]);
+            } else {
+                list.set(pos, arr[i]);
             }
         }
 
-        System.out.println(Arrays.stream(dp).max().getAsInt());
+        System.out.println(list.size());
     }
 }
