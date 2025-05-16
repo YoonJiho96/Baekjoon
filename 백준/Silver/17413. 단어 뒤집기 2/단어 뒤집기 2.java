@@ -1,48 +1,45 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
+        StringBuilder temp = new StringBuilder();
 
-        ArrayDeque<Character> stack = new ArrayDeque<>();
-        ArrayDeque<Character> reverse = new ArrayDeque<>();
         char[] input = br.readLine().toCharArray();
+        boolean isTag = false;
+
         for (char c : input) {
             if (c == '<') {
-                while (!reverse.isEmpty()) {
-                    sb.append(reverse.pop());
-                }
-
-                stack.push(c);
+                appendReverse(temp, sb); // 이전 단어 처리
+                isTag = true;
                 sb.append(c);
             } else if (c == '>') {
-                stack.clear();
+                isTag = false;
                 sb.append(c);
             } else if (c == ' ') {
-                if (!stack.isEmpty()) {
+                if (isTag) {
                     sb.append(c);
                 } else {
-                    while (!reverse.isEmpty()) {
-                        sb.append(reverse.pop());
-                    }
+                    appendReverse(temp, sb);
                     sb.append(c);
                 }
             } else {
-                if (stack.isEmpty()) {
-                    reverse.push(c);
-                } else {
+                if (isTag) {
                     sb.append(c);
+                } else {
+                    temp.append(c);
                 }
             }
         }
 
-        while (!reverse.isEmpty()) {
-            sb.append(reverse.pop());
-        }
-
+        appendReverse(temp, sb);
         System.out.println(sb);
+    }
+
+    private static void appendReverse(StringBuilder temp, StringBuilder main) {
+        main.append(temp.reverse());
+        temp.setLength(0);
     }
 }
