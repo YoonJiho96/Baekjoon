@@ -12,10 +12,10 @@ public class Main {
 
         int[] freq = new int[10];
         for (int i = 1; i <= n; i++) {
-            char[] nums = String.valueOf(i).toCharArray();
-
-            for (char c : nums) {
-                freq[c - '0']++;
+            int num = i;
+            while (num > 0) {
+                freq[num % 10]++;
+                num /= 10;
             }
         }
 
