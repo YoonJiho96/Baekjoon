@@ -7,10 +7,10 @@ class Solution {
         Arrays.sort(times);
         
         long left = 1;
-        long right = (long) times[times.length - 1] * n;
+        answer = (long) times[times.length - 1] * n;
         
-        while(left <= right) {
-            long mid = (left + right) / 2;
+        while(left < answer) {
+            long mid = (left + answer) / 2;
             long sum = 0;
 
             for (int time : times) {
@@ -20,7 +20,6 @@ class Solution {
 
             if (sum >= n) {
                 answer = mid;
-                right = mid - 1;
             } 
             else {
                 left = mid + 1;
