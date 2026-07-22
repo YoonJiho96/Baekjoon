@@ -1,34 +1,21 @@
 import java.util.*;
 
 class Solution {
-    boolean solution(String s) {
-        boolean answer = true;
-        
-        char[] inputs = s.toCharArray();
-        
+    boolean solution(String s) {        
         ArrayDeque<Character> stack = new ArrayDeque<>();
         
-        for(char c : inputs) {
+        for(int i=0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            
             if(c == '(') {
-                stack.offer(c);
-            }else {
+                stack.push(c);
+            } else {
                 if(stack.isEmpty()) {
-                    answer = false;
-                    break;
+                    return false;
                 }
-                
-                char last = stack.pollLast();
-                
-                if(last == ')') {
-                    stack.offer(last);
-                }
+                stack.pop();
             }
         }
-        
-        if(!stack.isEmpty()) {
-            answer = false;
-        }
-        
-        return answer;
+        return stack.isEmpty();
     }
 }
