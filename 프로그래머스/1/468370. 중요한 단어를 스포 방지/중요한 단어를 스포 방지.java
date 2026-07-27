@@ -1,14 +1,11 @@
 import java.util.*;
 
 class Solution {
-    public int solution(String message, int[][] spoiler_ranges) {
-        int answer = 0;
-        
+    public int solution(String message, int[][] spoiler_ranges) {        
         ArrayList<Word> list = new ArrayList<>();
 
         String[] words = message.split(" ");
         int currentIdx = 0;
-
         for (String s : words) {
             if (s.isEmpty()) continue; 
             
@@ -36,15 +33,14 @@ class Solution {
             }
         }
 
-        HashSet<String> revealed = new HashSet<>();
+        HashSet<String> answer = new HashSet<>();
         for (Word w : list) {
-            if (w.isSpoiler && !nonSpoilerSet.contains(w.str) && !revealed.contains(w.str)) {
-                answer++;
-                revealed.add(w.str);
+            if (w.isSpoiler && !nonSpoilerSet.contains(w.str)) {
+                answer.add(w.str);
             }
         }
         
-        return answer;
+        return answer.size();
     }
     
     class Word {
