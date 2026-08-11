@@ -2,10 +2,18 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] numbers) {
-        int len = numbers.length;
+        int prev = 0;
+        int max = 0;
         
-        Arrays.sort(numbers);
+        for(int n : numbers) {
+            if(max < n) {
+                prev = max;
+                max = n;
+            }else if(prev < n) {
+                prev = n;
+            }
+        }
         
-        return numbers[len - 1] * numbers[len - 2];
+        return prev * max;
     }
 }
