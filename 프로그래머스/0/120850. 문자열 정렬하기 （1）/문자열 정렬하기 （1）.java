@@ -2,17 +2,12 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String my_string) {
-        ArrayList<Integer> list = new ArrayList<>();
+        my_string = my_string.replaceAll("[a-z]", "");
         
-        for(char c : my_string.toCharArray()){
-            if(Character.isDigit(c)) {
-                list.add(c - '0');
-            }
-        }
+        int[] answer = new int[my_string.length()];
         
-        int[] answer = new int[list.size()];
         for(int i=0; i<answer.length; i++) {
-            answer[i] = list.get(i);
+            answer[i] = my_string.charAt(i) - '0';
         }
         Arrays.sort(answer);
         return answer;
