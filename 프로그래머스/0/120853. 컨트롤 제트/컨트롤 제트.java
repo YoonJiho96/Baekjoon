@@ -2,15 +2,19 @@ import java.util.*;
 
 class Solution {
     public int solution(String s) {
-        String[] str = s.split(" ");
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
         
-        int answer = Integer.parseInt(str[0]);
-        for(int i=1; i<str.length; i++) {
-            if(str[i].equals("Z")) {
-                answer -= Integer.parseInt(str[i-1]);
+        for(String c : s.split(" ")) {
+            if(c.equals("Z")) {
+                stack.pop();
             }else {
-                answer += Integer.parseInt(str[i]);
+                stack.push(Integer.parseInt(c));
             }
+        }
+        
+        int answer = 0;
+        for(int n : stack) {
+            answer += n;
         }
         
         return answer;
