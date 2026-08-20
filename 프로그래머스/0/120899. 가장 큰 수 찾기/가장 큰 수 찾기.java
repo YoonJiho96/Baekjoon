@@ -3,8 +3,8 @@ class Solution {
         int[] answer = new int[2];
         
         for(int i=0; i<array.length; i++) {
-            answer[0] = Math.max(answer[0], array[i]);
-            if(answer[0] == array[i]) {
+            if(array[i] > answer[0]) {
+                answer[0] = array[i];
                 answer[1] = i;
             }
         }
