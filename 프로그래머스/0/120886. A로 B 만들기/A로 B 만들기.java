@@ -8,12 +8,6 @@ class Solution {
         Arrays.sort(bf);
         Arrays.sort(af);
         
-        for(int i=0; i<bf.length; i++) {
-            if(bf[i] != af[i]) {
-                return 0;
-            }
-        }
-        
-        return 1;
+        return String.valueOf(bf).equals(String.valueOf(af)) ? 1:0;
     }
 }
