@@ -2,23 +2,31 @@ import java.util.*;
 
 class Solution {
     char[] moum = {'A', 'E', 'I', 'O', 'U'};
-    HashMap<String, Integer> map = new HashMap<>();
-    
+    String target;
     public int solution(String word) {
-        dfs(0, "");
-        return map.get(word);
+        target = word;
+        dfs("");
+        return cnt;
     }
     
     int cnt = 0;
-    void dfs(int len, String str) {
-        map.put(str, cnt);
-        if(len >= 5) {
-            return;
+    boolean dfs(String str) {
+        if(str.equals(target)) {
+            return true;
+        }
+        
+        if(str.length() >= 5) {
+            return false;
         }
         
         for(int i=0; i<5; i++) {
             cnt++;
-            dfs(len + 1, str + moum[i]);
+            
+           if(dfs(str + moum[i])) {
+               return true;
+           } 
         }
+        
+        return false;
     }
 }
