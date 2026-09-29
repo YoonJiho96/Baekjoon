@@ -1,33 +1,24 @@
 import java.util.*;
 
 class Solution {
-    static String[] vowel = {"A", "E", "I", "O", "U"};
-    static String target;
-    int answer = 0;
-    int count = 0;
+    char[] moum = {'A', 'E', 'I', 'O', 'U'};
+    HashMap<String, Integer> map = new HashMap<>();
     
-    public int solution(String word) {    
-        target = word;
-        
-        dfs("");
-        
-        return answer;
+    public int solution(String word) {
+        dfs(0, "");
+        return map.get(word);
     }
     
-    void dfs(String str) {
-        if(str.equals(target)) {
-            answer = count;
+    int cnt = 0;
+    void dfs(int len, String str) {
+        map.put(str, cnt);
+        if(len >= 5) {
             return;
         }
         
-        if(str.length() == 5) {
-            return;
-        }
-        
-        for(int i=0; i<vowel.length; i++) {
-            String next = str + vowel[i];
-            count++;
-            dfs(next);
+        for(int i=0; i<5; i++) {
+            cnt++;
+            dfs(len + 1, str + moum[i]);
         }
     }
 }
