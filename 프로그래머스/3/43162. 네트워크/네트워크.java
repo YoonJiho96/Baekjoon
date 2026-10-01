@@ -16,10 +16,8 @@ class Solution {
             check[i] = true;
             while(!queue.isEmpty()) {
                 int cur = queue.poll();
-                
                 for(int j=0; j<n; j++) {
-                    int next = computers[cur][j];
-                    if(next == 1 && !check[j]) {
+                    if(computers[cur][j] == 1 && !check[j]) {
                         queue.offer(j);
                         check[j] = true;
                     }
