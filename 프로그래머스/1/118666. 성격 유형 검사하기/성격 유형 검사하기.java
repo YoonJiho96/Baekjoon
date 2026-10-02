@@ -1,12 +1,8 @@
-import java.util.*;
-
 class Solution {
     public String solution(String[] survey, int[] choices) {
         int[] alp = new int[26];
         
-        int n = survey.length;
-        
-        for(int i=0; i<n; i++) {
+        for(int i=0; i<survey.length; i++) {
             String s = survey[i];
             int choice = choices[i];
             
@@ -27,7 +23,6 @@ class Solution {
         answer += alp['C' - 'A'] >= alp['F' - 'A'] ? "C":"F";
         answer += alp['J' - 'A'] >= alp['M' - 'A'] ? "J":"M";
         answer += alp['A' - 'A'] >= alp['N' - 'A'] ? "A":"N";
-
         return answer;
     }
 }
