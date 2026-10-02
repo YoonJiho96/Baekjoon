@@ -1,4 +1,6 @@
 class Solution {
+    char[][] info = {{'R', 'T'}, {'C', 'F'}, {'J', 'M'}, {'A', 'N'}};
+    
     public String solution(String[] survey, int[] choices) {
         int[] alp = new int[26];
         
@@ -19,10 +21,9 @@ class Solution {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(alp['R' - 'A'] >= alp['T' - 'A'] ? "R":"T");
-        sb.append(alp['C' - 'A'] >= alp['F' - 'A'] ? "C":"F");
-        sb.append(alp['J' - 'A'] >= alp['M' - 'A'] ? "J":"M");
-        sb.append(alp['A' - 'A'] >= alp['N' - 'A'] ? "A":"N");
+        for(char[] i : info) {
+            sb.append(alp[i[0] - 'A'] >= alp[i[1] - 'A'] ? i[0]:i[1]);
+        }
         return sb.toString();
     }
 }
