@@ -18,11 +18,11 @@ class Solution {
             }
         }
 
-        String answer = "";
-        answer += alp['R' - 'A'] >= alp['T' - 'A'] ? "R":"T";
-        answer += alp['C' - 'A'] >= alp['F' - 'A'] ? "C":"F";
-        answer += alp['J' - 'A'] >= alp['M' - 'A'] ? "J":"M";
-        answer += alp['A' - 'A'] >= alp['N' - 'A'] ? "A":"N";
-        return answer;
+        StringBuilder sb = new StringBuilder();
+        sb.append(alp['R' - 'A'] >= alp['T' - 'A'] ? "R":"T");
+        sb.append(alp['C' - 'A'] >= alp['F' - 'A'] ? "C":"F");
+        sb.append(alp['J' - 'A'] >= alp['M' - 'A'] ? "J":"M");
+        sb.append(alp['A' - 'A'] >= alp['N' - 'A'] ? "A":"N");
+        return sb.toString();
     }
 }
