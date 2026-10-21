@@ -6,10 +6,10 @@ class Solution {
         Arrays.sort(arr);
         
         StringBuilder sb = new StringBuilder();
-        for(int i=arr.length-1; i>=0; i--) {
-            sb.append(arr[i]);
+        for(char c : arr) {
+            sb.append(c);
         }
         
-        return Long.parseLong(sb.toString());
+        return Long.parseLong(sb.reverse().toString());
     }
 }
